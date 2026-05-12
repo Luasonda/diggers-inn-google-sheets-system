@@ -39,3 +39,13 @@ button, .button { display: inline-flex; align-items: center; justify-content: ce
 .list { margin: 0; padding-left: 18px; }
 .notice { border-left: 4px solid var(--accent); padding: 12px 14px; background: rgba(212,167,63,0.08); border-radius: 10px; }
 .role-box { border: 1px dashed rgba(212,167,63,0.4); padding: 12px; border-radius: 12px; }
+.inventory-layout { display: grid; grid-template-columns: minmax(320px, 420px) minmax(420px, 1fr); gap: 18px; align-items: start; }
+.inventory-form-panel, .inventory-list-panel { min-height: 640px; }
+.inventory-panel-title { background: #1a537f; color: #fff; font-weight: 700; padding: 10px 14px; border-radius: 10px 10px 0 0; margin: -20px -20px 16px; }
+.inventory-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.inventory-list-header { display: grid; gap: 12px; }
+.inventory-search-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.inventory-table-wrap { overflow: auto; max-height: 560px; border: 1px solid var(--border); border-radius: 12px; }
+.inventory-table tbody tr.selected-row { background: rgba(212,167,63,0.16); }
+.inventory-liquor-box { border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: rgba(255,255,255,0.03); }
+@media (max-width: 980px) { .inventory-layout { grid-template-columns: 1fr; } .inventory-form-panel, .inventory-list-panel { min-height: auto; } }
