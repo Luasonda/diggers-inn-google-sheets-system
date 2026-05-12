@@ -1,44 +1,27 @@
 import { AppNav } from '@/components/nav';
 import { HeaderUser } from '@/components/header-user';
-import { getProducts } from '@/lib/queries';
+import { ProductManagement } from '@/components/product-management';
+import { listProductsDetailed } from '@/lib/product-service';
 import { requirePermission } from '@/lib/session';
 
 export default async function ProductsPage() {
   await requirePermission('products.read');
-  const products = await getProducts();
+  const products = await listProductsDetailed();
+
   return (
     <main className="container">
       <div className="header">
         <div>
           <div className="badge">Products</div>
-          <h1>Inventory master</h1>
-          <p className="subtle">Manager-only area for stock items and liquor bottle profiles.</p>
+          <h1>Product management</h1>
+          <p className="subtle">Manage stock items, pricing, reorder levels, and liquor-specific bottle profiles.</p>
         </div>
         <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
           <HeaderUser />
           <AppNav />
         </div>
       </div>
-      <section className="card">
-        <table className="table">
-          <thead>
-            <tr><th>Name</th><th>Category</th><th>Unit</th><th>Stock type</th><th>Reorder level</th><th>Cost</th><th>Sell</th></tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={`${product.name}-${product.unit}`}>
-                <td>{product.name}</td>
-                <td>{product.category}</td>
-                <td>{product.unit}</td>
-                <td>{product.type}</td>
-                <td>{product.reorder}</td>
-                <td>{'costPrice' in product ? product.costPrice : '—'}</td>
-                <td>{'sellPrice' in product ? product.sellPrice : '—'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <ProductManagement initialProducts={products as any} />
     </main>
   );
 }
