@@ -11,14 +11,14 @@ export async function createOpeningCount(payload: unknown) {
   }
 
   const supabase = getSupabaseAdmin();
-  const { data: result, error } = await supabase.from('stock_session_items').insert({
+  const { data: result, error } = await supabase.from('stock_session_items').upsert({
     session_id: data.sessionId,
     product_id: data.productId,
     opening_full_bottles: data.openingFullBottles ?? 0,
     opening_gross_weight_g: data.openingGrossWeightG ?? 0,
     issued_qty: data.issuedQty ?? 0,
     notes: data.notes ?? null,
-  }).select().single();
+  }, { onConflict: 'session_id,product_id' }).select().single();
 
   if (error) throw error;
   return { mode: 'supabase', record: result };
