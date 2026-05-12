@@ -1,7 +1,8 @@
 import { AppNav } from '@/components/nav';
-import { products } from '@/lib/mock-data';
+import { getProducts } from '@/lib/queries';
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
   return (
     <main className="container">
       <div className="header">
@@ -15,7 +16,7 @@ export default function ProductsPage() {
       <section className="card">
         <table className="table">
           <thead>
-            <tr><th>Name</th><th>Category</th><th>Unit</th><th>Stock type</th><th>Reorder level</th></tr>
+            <tr><th>Name</th><th>Category</th><th>Unit</th><th>Stock type</th><th>Reorder level</th><th>Cost</th><th>Sell</th></tr>
           </thead>
           <tbody>
             {products.map((product) => (
@@ -25,6 +26,8 @@ export default function ProductsPage() {
                 <td>{product.unit}</td>
                 <td>{product.type}</td>
                 <td>{product.reorder}</td>
+                <td>{'costPrice' in product ? product.costPrice : '—'}</td>
+                <td>{'sellPrice' in product ? product.sellPrice : '—'}</td>
               </tr>
             ))}
           </tbody>

@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { AppNav } from '@/components/nav';
-import { sessions } from '@/lib/mock-data';
+import { getSessions } from '@/lib/queries';
 
-export default function SessionsPage() {
+export default async function SessionsPage() {
+  const sessions = await getSessions();
   return (
     <main className="container">
       <div className="header">
@@ -19,7 +20,7 @@ export default function SessionsPage() {
       <section className="card">
         <table className="table">
           <thead>
-            <tr><th>Date</th><th>Bar</th><th>Status</th><th>Opened by</th><th>Closed by</th></tr>
+            <tr><th>Date</th><th>Bar</th><th>Status</th><th>Opened by</th><th>Closed by</th><th>Notes</th></tr>
           </thead>
           <tbody>
             {sessions.map((session) => (
@@ -29,6 +30,7 @@ export default function SessionsPage() {
                 <td>{session.status}</td>
                 <td>{session.openedBy}</td>
                 <td>{session.closedBy}</td>
+                <td>{'notes' in session ? session.notes : ''}</td>
               </tr>
             ))}
           </tbody>

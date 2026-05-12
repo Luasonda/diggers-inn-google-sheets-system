@@ -2,10 +2,12 @@ import { AppNav } from '@/components/nav';
 import { PermissionPanel } from '@/components/permission-panel';
 import { RoleSwitcher } from '@/components/role-switcher';
 import { getDemoRole } from '@/lib/auth';
-import { bartenderPermissions, kpis, lowStockItems } from '@/lib/mock-data';
+import { bartenderPermissions } from '@/lib/mock-data';
+import { getDashboardSummary } from '@/lib/queries';
 
-export default function DashboardPage({ searchParams }: { searchParams?: { role?: string } }) {
+export default async function DashboardPage({ searchParams }: { searchParams?: { role?: string } }) {
   const role = getDemoRole(searchParams?.role ?? null);
+  const summary = await getDashboardSummary();
   return (
     <main className="container">
       <div className="header">
@@ -21,7 +23,7 @@ export default function DashboardPage({ searchParams }: { searchParams?: { role?
       </div>
 
       <section className="grid cols-4">
-        {kpis.map((item) => (
+        {summary.kpis.map((item) => (
           <article key={item.label} className="card">
             <div className="subtle">{item.label}</div>
             <div className="kpi">{item.value}</div>
@@ -38,7 +40,7 @@ export default function DashboardPage({ searchParams }: { searchParams?: { role?
               <tr><th>Item</th><th>Category</th><th>Status</th><th>Balance</th></tr>
             </thead>
             <tbody>
-              {lowStockItems.map((row) => (
+              {summary.lowStock.map((row) => (
                 <tr key={row.item}>
                   <td>{row.item}</td>
                   <td>{row.category}</td>

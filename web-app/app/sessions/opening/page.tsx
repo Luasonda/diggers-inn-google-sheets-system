@@ -2,6 +2,7 @@ import { AppNav } from '@/components/nav';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
 import { getDemoRole } from '@/lib/auth';
+import { getRecentCounts } from '@/lib/queries';
 
 const items = [
   { item: 'J&B Rare', mode: 'weighted liquor', openingBottles: 1, openingWeight: 447 },
@@ -9,8 +10,9 @@ const items = [
   { item: 'Mosi Lager', mode: 'full bottle', openingBottles: 18, openingWeight: null },
 ];
 
-export default function OpeningCountPage({ searchParams }: { searchParams?: { role?: string } }) {
+export default async function OpeningCountPage({ searchParams }: { searchParams?: { role?: string } }) {
   const role = getDemoRole(searchParams?.role ?? null);
+  const activity = await getRecentCounts();
 
   return (
     <main className="container">
@@ -57,11 +59,11 @@ export default function OpeningCountPage({ searchParams }: { searchParams?: { ro
         </table>
       </section>
 
-      <section style={{ marginTop: 16 }}>
+      <section className="grid cols-2" style={{ marginTop: 16 }}>
         <LiveSaveForm
           endpoint="/api/opening-count"
           title="Backend save test"
-          description="This hits the API route now. Without Supabase env it saves in demo mode; once Supabase is configured it will save to the database."
+          description="This hits the API route and now writes to Supabase in the live deployment."
           payload={{
             sessionId: '11111111-1111-1111-1111-111111111111',
             productId: '22222222-2222-2222-2222-222222222222',
@@ -71,6 +73,24 @@ export default function OpeningCountPage({ searchParams }: { searchParams?: { ro
             notes: 'Opening count test',
           }}
         />
+        <article className="card">
+          <h2>Recent opening counts</h2>
+          <table className="table">
+            <thead>
+              <tr><th>Date</th><th>Item</th><th>Units</th><th>Weight (g)</th></tr>
+            </thead>
+            <tbody>
+              {activity.openingCounts.length ? activity.openingCounts.map((row: any) => (
+                <tr key={row.id}>
+                  <td>{row.businessDate ?? '—'}</td>
+                  <td>{row.item}</td>
+                  <td>{row.openingFullBottles ?? 0}</td>
+                  <td>{row.openingGrossWeightG ?? 0}</td>
+                </tr>
+              )) : <tr><td colSpan={4}>No opening counts yet.</td></tr>}
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
   );

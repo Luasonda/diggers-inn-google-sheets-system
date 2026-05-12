@@ -2,6 +2,7 @@ import { AppNav } from '@/components/nav';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
 import { getDemoRole } from '@/lib/auth';
+import { getRecentCounts } from '@/lib/queries';
 
 const items = [
   { item: 'J&B Rare', expectedShots: 21.9, closingBottles: 1, closingWeight: 1038, variance: 2.54 },
@@ -9,8 +10,9 @@ const items = [
   { item: 'Mosi Lager', expectedShots: null, closingBottles: 12, closingWeight: null, variance: -1 },
 ];
 
-export default function ClosingCountPage({ searchParams }: { searchParams?: { role?: string } }) {
+export default async function ClosingCountPage({ searchParams }: { searchParams?: { role?: string } }) {
   const role = getDemoRole(searchParams?.role ?? null);
+  const activity = await getRecentCounts();
 
   return (
     <main className="container">
@@ -57,11 +59,11 @@ export default function ClosingCountPage({ searchParams }: { searchParams?: { ro
         </table>
       </section>
 
-      <section style={{ marginTop: 16 }}>
+      <section className="grid cols-2" style={{ marginTop: 16 }}>
         <LiveSaveForm
           endpoint="/api/closing-count"
           title="Backend save test"
-          description="This sends a closing count through the validated API route. Once Supabase is configured, this route will upsert the closing entry into the database."
+          description="This sends a closing count through the validated API route and now upserts into Supabase in the live deployment."
           payload={{
             sessionId: '11111111-1111-1111-1111-111111111111',
             productId: '22222222-2222-2222-2222-222222222222',
@@ -71,6 +73,24 @@ export default function ClosingCountPage({ searchParams }: { searchParams?: { ro
             notes: 'Closing count test',
           }}
         />
+        <article className="card">
+          <h2>Recent closing counts</h2>
+          <table className="table">
+            <thead>
+              <tr><th>Date</th><th>Item</th><th>Units</th><th>Weight (g)</th></tr>
+            </thead>
+            <tbody>
+              {activity.closingCounts.length ? activity.closingCounts.map((row: any) => (
+                <tr key={row.id}>
+                  <td>{row.businessDate ?? '—'}</td>
+                  <td>{row.item}</td>
+                  <td>{row.closingFullBottles ?? 0}</td>
+                  <td>{row.closingGrossWeightG ?? 0}</td>
+                </tr>
+              )) : <tr><td colSpan={4}>No closing counts yet.</td></tr>}
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
   );

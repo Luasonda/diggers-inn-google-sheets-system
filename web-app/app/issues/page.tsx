@@ -2,9 +2,11 @@ import { AppNav } from '@/components/nav';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
 import { getDemoRole } from '@/lib/auth';
+import { getRecentIssues } from '@/lib/queries';
 
-export default function IssuesPage({ searchParams }: { searchParams?: { role?: string } }) {
+export default async function IssuesPage({ searchParams }: { searchParams?: { role?: string } }) {
   const role = getDemoRole(searchParams?.role ?? null);
+  const recentIssues = await getRecentIssues();
   return (
     <main className="container">
       <div className="header">
@@ -34,11 +36,11 @@ export default function IssuesPage({ searchParams }: { searchParams?: { role?: s
         <PermissionPanel role={role} />
       </section>
 
-      <section style={{ marginTop: 16 }}>
+      <section className="grid cols-2" style={{ marginTop: 16 }}>
         <LiveSaveForm
           endpoint="/api/stock-issues"
           title="Backend save test"
-          description="This creates a stock issue via the API. It runs in demo mode until Supabase environment variables are added."
+          description="This creates a stock issue via the API and now writes to Supabase in the live deployment."
           payload={{
             sessionId: '11111111-1111-1111-1111-111111111111',
             productId: '22222222-2222-2222-2222-222222222222',
@@ -49,6 +51,25 @@ export default function IssuesPage({ searchParams }: { searchParams?: { role?: s
             notes: 'Morning issue',
           }}
         />
+        <article className="card">
+          <h2>Recent issues</h2>
+          <table className="table">
+            <thead>
+              <tr><th>Date</th><th>Item</th><th>Qty</th><th>Issued by</th><th>Received by</th></tr>
+            </thead>
+            <tbody>
+              {recentIssues.length ? recentIssues.map((issue: any) => (
+                <tr key={issue.id ?? `${issue.productName}-${issue.issueDate}`}>
+                  <td>{issue.issueDate ? String(issue.issueDate).slice(0, 10) : '—'}</td>
+                  <td>{issue.productName ?? '—'}</td>
+                  <td>{issue.quantity ?? '—'}</td>
+                  <td>{issue.issuedBy ?? '—'}</td>
+                  <td>{issue.receivedBy ?? '—'}</td>
+                </tr>
+              )) : <tr><td colSpan={5}>No issues yet.</td></tr>}
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
   );
