@@ -1,0 +1,7 @@
+node_modules/
+.venv/
+web-app/node_modules/
+web-app/.next/
+web-app/.vercel/
+web-app/.env.local
+*.log
