@@ -12,6 +12,7 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <Link href="/dashboard" className="button">Open dashboard</Link>
           <Link href="/sessions/opening?role=bartender" className="button secondary">Test bartender flow</Link>
+          <Link href="/setup" className="button secondary">Backend setup</Link>
         </div>
       </div>
 
@@ -24,6 +25,7 @@ export default function HomePage() {
             <li>Role-based route guard scaffolding</li>
             <li>Opening and closing stock count screens</li>
             <li>Session, issue, and stock workflow foundations</li>
+            <li>Supabase-ready API routes for saving real data</li>
           </ul>
         </section>
         <section className="card soft">

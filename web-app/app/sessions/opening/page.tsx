@@ -1,4 +1,5 @@
 import { AppNav } from '@/components/nav';
+import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
 import { getDemoRole } from '@/lib/auth';
 
@@ -54,7 +55,22 @@ export default function OpeningCountPage({ searchParams }: { searchParams?: { ro
             ))}
           </tbody>
         </table>
-        <div style={{ marginTop: 16 }}><button type="button">Save opening count</button></div>
+      </section>
+
+      <section style={{ marginTop: 16 }}>
+        <LiveSaveForm
+          endpoint="/api/opening-count"
+          title="Backend save test"
+          description="This hits the API route now. Without Supabase env it saves in demo mode; once Supabase is configured it will save to the database."
+          payload={{
+            sessionId: '11111111-1111-1111-1111-111111111111',
+            productId: '22222222-2222-2222-2222-222222222222',
+            openingFullBottles: 1,
+            openingGrossWeightG: 447,
+            issuedQty: 0,
+            notes: 'Opening count test',
+          }}
+        />
       </section>
     </main>
   );

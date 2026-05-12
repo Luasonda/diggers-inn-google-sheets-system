@@ -1,4 +1,5 @@
 import { AppNav } from '@/components/nav';
+import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
 import { getDemoRole } from '@/lib/auth';
 
@@ -54,10 +55,22 @@ export default function ClosingCountPage({ searchParams }: { searchParams?: { ro
             ))}
           </tbody>
         </table>
-        <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <button type="button">Save closing count</button>
-          <button type="button" className="button secondary">Submit for locking</button>
-        </div>
+      </section>
+
+      <section style={{ marginTop: 16 }}>
+        <LiveSaveForm
+          endpoint="/api/closing-count"
+          title="Backend save test"
+          description="This sends a closing count through the validated API route. Once Supabase is configured, this route will upsert the closing entry into the database."
+          payload={{
+            sessionId: '11111111-1111-1111-1111-111111111111',
+            productId: '22222222-2222-2222-2222-222222222222',
+            closingFullBottles: 1,
+            closingGrossWeightG: 1038,
+            issuedQty: 1,
+            notes: 'Closing count test',
+          }}
+        />
       </section>
     </main>
   );
