@@ -1,6 +1,9 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
+import { requirePermission } from '@/lib/session';
 
-export default function ReportsPage() {
+export default async function ReportsPage() {
+  await requirePermission('reports.read');
   return (
     <main className="container">
       <div className="header">
@@ -9,7 +12,10 @@ export default function ReportsPage() {
           <h1>Variance and movement reports</h1>
           <p className="subtle">Manager-only reporting area for variances, low stock, and daily movement.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
 
       <section className="grid cols-2">

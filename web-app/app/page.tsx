@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { getCurrentSession } from '@/lib/session';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getCurrentSession();
   return (
     <main className="container">
       <div className="header">
@@ -10,8 +12,8 @@ export default function HomePage() {
           <p className="subtle">Replacing the Excel workflow with controlled forms, role-based access, and cleaner reporting.</p>
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link href="/dashboard" className="button">Open dashboard</Link>
-          <Link href="/sessions/opening?role=bartender" className="button secondary">Test bartender flow</Link>
+          <Link href={session ? '/dashboard' : '/login'} className="button">{session ? 'Open dashboard' : 'Sign in'}</Link>
+          {session ? <Link href="/sessions/opening" className="button secondary">Open stock flow</Link> : null}
           <Link href="/setup" className="button secondary">Backend setup</Link>
         </div>
       </div>

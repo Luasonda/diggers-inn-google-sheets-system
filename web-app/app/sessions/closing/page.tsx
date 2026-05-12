@@ -1,8 +1,9 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
-import { getDemoRole } from '@/lib/auth';
 import { getRecentCounts } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
 const items = [
   { item: 'J&B Rare', expectedShots: 21.9, closingBottles: 1, closingWeight: 1038, variance: 2.54 },
@@ -10,8 +11,8 @@ const items = [
   { item: 'Mosi Lager', expectedShots: null, closingBottles: 12, closingWeight: null, variance: -1 },
 ];
 
-export default async function ClosingCountPage({ searchParams }: { searchParams?: { role?: string } }) {
-  const role = getDemoRole(searchParams?.role ?? null);
+export default async function ClosingCountPage() {
+  const session = await requirePermission('closing-count.write');
   const activity = await getRecentCounts();
 
   return (
@@ -22,7 +23,10 @@ export default async function ClosingCountPage({ searchParams }: { searchParams?
           <h1>Record closing stock</h1>
           <p className="subtle">End-of-day count with expected vs actual comparison and variance visibility.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
 
       <section className="grid cols-2">
@@ -36,7 +40,7 @@ export default async function ClosingCountPage({ searchParams }: { searchParams?
             <div className="notice">Variances should be reviewed before the session is locked.</div>
           </form>
         </article>
-        <PermissionPanel role={role} />
+        <PermissionPanel role={session.role} />
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>

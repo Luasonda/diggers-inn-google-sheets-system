@@ -1,6 +1,9 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
+import { requirePermission } from '@/lib/session';
 
-export default function NewSessionPage() {
+export default async function NewSessionPage() {
+  await requirePermission('sessions.write');
   return (
     <main className="container">
       <div className="header">
@@ -9,7 +12,10 @@ export default function NewSessionPage() {
           <h1>Open daily stock session</h1>
           <p className="subtle">This will later create the working container for opening, issue, and closing entries.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
 
       <section className="card">

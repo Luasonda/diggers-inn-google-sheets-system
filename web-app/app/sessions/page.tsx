@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { getSessions } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
 export default async function SessionsPage() {
+  await requirePermission('sessions.read');
   const sessions = await getSessions();
   return (
     <main className="container">
@@ -12,9 +15,12 @@ export default async function SessionsPage() {
           <h1>Stock sessions</h1>
           <p className="subtle">One stock-control session per business day.</p>
         </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <AppNav />
-          <Link href="/sessions/new" className="button">New session</Link>
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <AppNav />
+            <Link href="/sessions/new" className="button">New session</Link>
+          </div>
         </div>
       </div>
       <section className="card">

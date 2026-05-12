@@ -1,12 +1,20 @@
 import { publicEnv } from '@/lib/env';
+import { HeaderUser } from '@/components/header-user';
+import { requirePermission } from '@/lib/session';
 
-export default function SetupPage() {
+export default async function SetupPage() {
+  await requirePermission('users.manage');
   const supabaseReady = Boolean(publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
   return (
     <main className="container">
-      <div className="badge">Setup</div>
-      <h1>Backend setup status</h1>
+      <div className="header">
+        <div>
+          <div className="badge">Setup</div>
+          <h1>Backend setup status</h1>
+        </div>
+        <HeaderUser />
+      </div>
       <div className="grid cols-2">
         <section className="card">
           <h2>Supabase environment</h2>

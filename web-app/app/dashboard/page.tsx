@@ -1,12 +1,12 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { PermissionPanel } from '@/components/permission-panel';
-import { RoleSwitcher } from '@/components/role-switcher';
-import { getDemoRole } from '@/lib/auth';
 import { bartenderPermissions } from '@/lib/mock-data';
 import { getDashboardSummary } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
-export default async function DashboardPage({ searchParams }: { searchParams?: { role?: string } }) {
-  const role = getDemoRole(searchParams?.role ?? null);
+export default async function DashboardPage() {
+  const session = await requirePermission('sessions.read');
   const summary = await getDashboardSummary();
   return (
     <main className="container">
@@ -16,8 +16,8 @@ export default async function DashboardPage({ searchParams }: { searchParams?: {
           <h1>Diggers stock control</h1>
           <p className="subtle">Operational snapshot for managers and supervisors.</p>
         </div>
-        <div style={{ display: 'grid', gap: 10 }}>
-          <RoleSwitcher currentRole={role} />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
           <AppNav />
         </div>
       </div>
@@ -64,7 +64,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: {
       </section>
 
       <section style={{ marginTop: 16 }}>
-        <PermissionPanel role={role} />
+        <PermissionPanel role={session.role} />
       </section>
     </main>
   );

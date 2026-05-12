@@ -1,11 +1,12 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
-import { getDemoRole } from '@/lib/auth';
 import { getRecentIssues } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
-export default async function IssuesPage({ searchParams }: { searchParams?: { role?: string } }) {
-  const role = getDemoRole(searchParams?.role ?? null);
+export default async function IssuesPage() {
+  const session = await requirePermission('issues.write');
   const recentIssues = await getRecentIssues();
   return (
     <main className="container">
@@ -15,7 +16,10 @@ export default async function IssuesPage({ searchParams }: { searchParams?: { ro
           <h1>Issue stock to bar</h1>
           <p className="subtle">Storekeeper or authorised staff record stock issued into the active session.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
 
       <section className="grid cols-2">
@@ -33,7 +37,7 @@ export default async function IssuesPage({ searchParams }: { searchParams?: { ro
             </div>
           </form>
         </article>
-        <PermissionPanel role={role} />
+        <PermissionPanel role={session.role} />
       </section>
 
       <section className="grid cols-2" style={{ marginTop: 16 }}>

@@ -1,7 +1,10 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { getProducts } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
 export default async function ProductsPage() {
+  await requirePermission('products.read');
   const products = await getProducts();
   return (
     <main className="container">
@@ -11,7 +14,10 @@ export default async function ProductsPage() {
           <h1>Inventory master</h1>
           <p className="subtle">Manager-only area for stock items and liquor bottle profiles.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
       <section className="card">
         <table className="table">

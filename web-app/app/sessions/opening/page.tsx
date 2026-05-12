@@ -1,8 +1,9 @@
 import { AppNav } from '@/components/nav';
+import { HeaderUser } from '@/components/header-user';
 import { LiveSaveForm } from '@/components/live-save-form';
 import { PermissionPanel } from '@/components/permission-panel';
-import { getDemoRole } from '@/lib/auth';
 import { getRecentCounts } from '@/lib/queries';
+import { requirePermission } from '@/lib/session';
 
 const items = [
   { item: 'J&B Rare', mode: 'weighted liquor', openingBottles: 1, openingWeight: 447 },
@@ -10,8 +11,8 @@ const items = [
   { item: 'Mosi Lager', mode: 'full bottle', openingBottles: 18, openingWeight: null },
 ];
 
-export default async function OpeningCountPage({ searchParams }: { searchParams?: { role?: string } }) {
-  const role = getDemoRole(searchParams?.role ?? null);
+export default async function OpeningCountPage() {
+  const session = await requirePermission('opening-count.write');
   const activity = await getRecentCounts();
 
   return (
@@ -22,7 +23,10 @@ export default async function OpeningCountPage({ searchParams }: { searchParams?
           <h1>Record opening stock</h1>
           <p className="subtle">Bartender-safe screen for starting the day with controlled stock entries.</p>
         </div>
-        <AppNav />
+        <div style={{ display: 'grid', gap: 10, justifyItems: 'end' }}>
+          <HeaderUser />
+          <AppNav />
+        </div>
       </div>
 
       <section className="grid cols-2">
@@ -36,7 +40,7 @@ export default async function OpeningCountPage({ searchParams }: { searchParams?
             <div className="notice">Only opening counts should be entered here. No product edits, no back-dated changes.</div>
           </form>
         </article>
-        <PermissionPanel role={role} />
+        <PermissionPanel role={session.role} />
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
